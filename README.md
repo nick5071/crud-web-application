@@ -10,6 +10,12 @@
 
 • Razor Pages
 
+• jQuery
+
+• Bootstrap
+
+• Vue
+
 # Banco de dados SQL SERVER
 Comandos pacote NuGet (Entity framework)
 
