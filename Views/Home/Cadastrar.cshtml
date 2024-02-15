@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Cadastrar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string dataAtual = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+}
+
+
+
+@if (ViewBag.mensagemSucesso != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @ViewBag.mensagemSucesso
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div class="form-check form-switch ms-auto mt-3 me-3">
+    <label class="form-check-label ms-3" for="lightSwitch">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="25"
+             height="25"
+             fill="currentColor"
+             class="bi bi-brightness-high"
+             viewBox="0 0 16 16">
+            <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
+        </svg>
+    </label>
+    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked onclick="myFunction()" />
+</div>
+<div id="formCadastroPessoas">
+    <form method="post" action="/Home/CadastrarPost" v-on:submit.prevent="salvar(event)">
+        <div class="form-group">
+            <label for="Nome">Nome:</label>
+            <input type="text" v-validate="'required'" class="form-control" id="Nome" placeholder="Nome" name="Nome" maxlength="200">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                Campo obrigatório
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="DataNascimento">Data de nascimento:</label>
+            <input type="date" class="form-control" id="DataNascimento" name="DataNascimento" v-model="pessoa.DataNascimento"
+                   v-validate="'required|date_format:yyyy-MM-dd|date_between:1900-01-01,@dataAtual'">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                {{ errors.first("DataNascimento") }}
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="form-group">
+                <label for="Sexo">Sexo:</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Sexo" id="SexoMasculino" v-validate="'required'" value="M">
+                <label class="form-check-label" for="inlineRadio1">Masculino</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Sexo" id="SexoFeminino" v-validate="'required'" value="F">
+                <label class="form-check-label" for="inlineRadio2">Feminino</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="EstadoCivil">Estado Civil:</label>
+                <select id="EstadoCivil" class="form-control" name="EstadoCivil" v-validate="'required'">
+                    <option value="">Selecione uma opção..</option>
+                    <option>Solteiro(a)</option>
+                    <option>Casado(a)</option>
+                    <option>Divorciado(a)</option>
+                    <option>Viúvo(a)</option>
+                </select>
+                <div id="validationServer03Feedback" class="invalid-feedback">
+                    Campo obrigatório
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="CPF">CPF:</label>
+                <input type="text" class="form-control" id="CPF" placeholder="Insira seu CPF" name="CPF" v-mask="'###.###.###-##'" v-validate="'required|validar-cpf|verificar-cpf-ja-cadastrado'">
+                <div id="validationServer03Feedback" class="invalid-feedback">
+                    {{ errors.first("CPF") }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Endereco">Endereço:</label>
+            <input type="text" class="form-control" id="Endereco" placeholder="Insira seu Endereço" name="Endereco" v-validate="'required'" maxlength="100">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                Campo obrigatório
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="CEP">CEP: <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank">Ver meu cep</a></label>
+            <input type="text" class="form-control" id="CEP" placeholder="Insira seu CEP de endereço" name="CEP" v-mask="'#####-###'" v-validate="'required|validar-cep'">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                {{ errors.first('CEP') }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="CPF">Número:</label>
+            <input type="text" class="form-control" id="Numero" placeholder="Numero de residência" name="Numero" v-validate="'required'" maxlength="10">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                Campo obrigatório
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="CPF">Complemento</label>
+            <input type="text" class="form-control" id="Complemento" placeholder="Complemento(opcional)" name="Complemento" maxlength="30">
+        </div>
+        <div class="form-group">
+            <label for="CPF">Bairro:</label>
+            <input type="text" class="form-control" id="Bairro" placeholder="Digite seu Bairro" name="Bairro" v-validate="'required'" maxlength="50">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                Campo obrigatório
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="CPF">Cidade:</label>
+            <input type="text" class="form-control" id="Cidade" placeholder="Insira sua Cidade" name="Cidade" v-validate="'required'" maxlength="50">
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                Campo obrigatório
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="UF">UF:</label>
+            <select id="EstadoCivil" class="form-control" name="UF" v-validate="'required'">
+                <option value="">Selecione</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espirito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Salvar</button>
+        <a href="~/Home/"><button type="button" class="btn btn-danger mt-2">Voltar</button></a>
+    </form>
+</div>
+

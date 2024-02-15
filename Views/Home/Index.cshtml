@@ -1,0 +1,240 @@
+﻿@using CrudUser.ViewModels
+@model IEnumerable<PessoaViewModel>
+@{
+     string dataAtual = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+}
+<a class="btn btn-primary" href="/Home/Cadastrar" role="button">Cadastrar</a>
+<h1>Listagem</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <div class="form-check form-switch ms-auto mt-3 me-3">
+                <label class="form-check-label ms-3" for="lightSwitch">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="25"
+                         height="25"
+                         fill="currentColor"
+                         class="bi bi-brightness-high"
+                         viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
+                    </svg>
+                </label>
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked onclick="myFunction()" />
+            </div>
+            <th scope="col">Nome</th>
+            <th scope="col">Data de nascimento</th>
+            <th scope="col">Sexo</th>
+            <th scope="col">Estado Civil</th>
+            <th scope="col">CPF</th>
+            <th scope="col">CEP</th>
+            <th scope="col">Endereço</th>
+            <th scope="col">Numero</th>
+            <th scope="col">Complemento</th>
+            <th scope="col">Bairro</th>
+            <th scope="col">Cidade</th>
+            <th scope="col">UF</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (PessoaViewModel item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.DataNascimentoFormatada</td>
+                <td>@item.Sexo</td>
+                <td>@item.EstadoCivil</td>
+                <td>@item.CPF</td>
+                <td>@item.CEP</td>
+                <td>@item.Endereco</td>
+                <td>@item.Numero</td>
+                <td>@item.Complemento</td>
+                <td>@item.Bairro</td>
+                <td>@item.Cidade</td>
+                <td>@item.UF</td>
+
+                <td class="d-flex m-0 border-0">
+                    <button class="btn btn-danger btnExcluir me-1" data-bs-toggle="modal" data-bs-target="#winConfirmarExclusao_@item.Id" data-id="">Excluir</button>
+                    <!-- Corrigindo o atributo data-bs-target para apontar para o ID correto do modal -->
+                    <button class="btn btn-primary ms-1" data-bs-toggle="modal" data-bs-target="#MeuModal_@item.Id" data-id="">Editar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <p>Nenhuma pessoa cadastrada</p>
+}
+
+<!-- Modal -->
+<div id="listar">
+    @foreach (PessoaViewModel item in Model)
+    {
+        <div class="modal fade" id="winConfirmarExclusao_@item.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Excluir Pessoa</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Deseja realmente excluir essa pessoa?
+                    </div>
+                    <div class="modal-footer">
+                        <form id="formExcluir_@item.Id" action="@Url.RouteUrl("excluirPost")" method="post">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger btnExcluirConfirmar">Sim</button>
+                        </form>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="MeuModal_@item.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Editar pessoa</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="formCadastroPessoas">
+                        <div class="modal-body">
+                            <form method="post" action="/Home/Editar" v-on:submit.prevent="salvar(event)">
+                                <div class="form-group">
+                                    <label for="Nome">Nome:</label>
+                                    <input type="text" v-validate="'required'" class="form-control" id="Nome" placeholder="Nome" name="Nome" maxlength="200" value="@item.Nome">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        Campo obrigatório
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Nome">Data de nascimento</label>
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="date" class="form-control" id="DataNascimento" name="DataNascimento" v-model="pessoa.DataNascimento"
+                                           v-validate="'required|date_format:yyyy-MM-dd|date_between:1900-01-01,@dataAtual'">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        {{ errors.first("DataNascimento") }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label>Sexo:</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="Sexo" id="SexoMasculino" v-validate="'required'" value="M">
+                                        <label class="form-check-label" for="SexoMasculino">Masculino</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="Sexo" id="SexoFeminino" v-validate="'required'" value="F">
+                                        <label class="form-check-label" for="SexoFeminino">Feminino</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="EstadoCivil">Estado Civil:</label>
+                                        <select id="EstadoCivil" class="form-control" name="EstadoCivil" v-validate="'required'">
+                                            <option value="">Selecione uma opção..</option>
+                                            <option value="Solteiro(a)">Solteiro(a)</option>
+                                            <option value="Casado(a)">Casado(a)</option>
+                                            <option value="Divorciado(a)">Divorciado(a)</option>
+                                            <option value="Viúvo(a)">Viúvo(a)</option>
+                                        </select>
+                                        <div id="validationServer03Feedback" class="invalid-feedback">
+                                            Campo obrigatório
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="CPF">CPF:</label>
+                                        <div class="input-group mb-lg-1">
+                                            <span class="input-group-text"><i class='fa fa-lock fa-0.5x'></i></span>
+                                            <input type="text" class="form-control" id="disabledTextInput" value="@item.CPF" name="CPF" readonly maxlength="14">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Endereco">Endereço:</label>
+                                    <input type="text" class="form-control" id="Endereco" placeholder="Insira seu Endereço" v-validate="'required'" name="Endereco" value="@item.Endereco" maxlength="200">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        Campo obrigatório
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="CEP">CEP:</label>
+                                    <input type="text" class="form-control" id="CEP" placeholder="Insira seu CEP de endereço" v-validate="'required|validar-cep'" v-mask="'#####-###'" name="CEP" value="@item.CEP">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        {{ errors.first('CEP') }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Numero">Número:</label>
+                                    <input type="text" class="form-control" id="Numero" placeholder="Número de residência" v-validate="'required'" name="Numero" value="@item.Numero" maxlength="10">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        Campo obrigatório
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Complemento">Complemento</label>
+                                    <input type="text" class="form-control" id="Complemento" placeholder="Complemento (opcional)" name="Complemento" maxlength="30" value="@item.Complemento">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Bairro">Bairro:</label>
+                                    <input type="text" class="form-control" id="Bairro" placeholder="Digite seu Bairro" v-validate="'required'" name="Bairro" value="@item.Bairro" maxlength="50">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        Campo obrigatório
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Cidade">Cidade:</label>
+                                    <input type="text" class="form-control" id="Cidade" placeholder="Insira sua Cidade" v-validate="'required'" name="Cidade" value="@item.Cidade" maxlength="50">
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        Campo obrigatório
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="UF">UF:</label>
+                                    <select id="UF" class="form-control" name="UF" v-validate="'required'">
+                                        <option value="">Selecione</option>
+                                        <option value="AC">Acre</option>
+                                        <option value="AL">Alagoas</option>
+                                        <option value="AP">Amapá</option>
+                                        <option value="AM">Amazonas</option>
+                                        <option value="BA">Bahia</option>
+                                        <option value="CE">Ceará</option>
+                                        <option value="DF">Distrito Federal</option>
+                                        <option value="ES">Espirito Santo</option>
+                                        <option value="GO">Goiás</option>
+                                        <option value="MA">Maranhão</option>
+                                        <option value="MS">Mato Grosso do Sul</option>
+                                        <option value="MT">Mato Grosso</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="PA">Pará</option>
+                                        <option value="PB">Paraíba</option>
+                                        <option value="PR">Paraná</option>
+                                        <option value="PE">Pernambuco</option>
+                                        <option value="PI">Piauí</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="RN">Rio Grande do Norte</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                        <option value="RO">Rondônia</option>
+                                        <option value="RR">Roraima</option>
+                                        <option value="SC">Santa Catarina</option>
+                                        <option value="SP">São Paulo</option>
+                                        <option value="SE">Sergipe</option>
+                                        <option value="TO">Tocantins</option>
+                                    </select>
+                                    <div id="validationServer03Feedback" class="invalid-feedback">
+                                        Campo obrigatório
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btnExcluirConfirmar mt-3">Salvar</button>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    }
+</div>
