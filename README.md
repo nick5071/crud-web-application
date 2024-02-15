@@ -20,7 +20,7 @@
 Comandos pacote NuGet (Entity framework)
 
 
-  Importate: Mude o Server do DefaultConnection no appsettings.json, para o nome do servidor de sua máquina
+  Importante: Mude o Server do DefaultConnection no appsettings.json, para o nome do servidor de sua máquina
   
   • Add-migration Migrations (Criar banco de dados)
   
